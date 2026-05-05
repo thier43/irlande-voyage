@@ -349,8 +349,9 @@
 <div id="tabs-container"></div>
 
 <div id="save-bar">
-  <button onclick="saveAll()">💾 Sauvegarder mes données</button>
-  <span id="save-msg">✓ Sauvegardé !</span>
+  <button onclick="saveAll()">💾 Sauvegarder</button>
+  <button onclick="syncShared()" id="sync-btn" style="background:var(--blue);flex:0 0 auto;padding:11px 14px;font-size:.85rem;">🔄 Sync</button>
+  <span id="save-msg"></span>
 </div>
 
 <script>
@@ -692,7 +693,63 @@ async function loadSharedData() {
       }
     });
 
-  } catch(e) { /* silencieux si offline */ }
+  } catch(e) {
+    showMsg('⚠ Hors ligne — données non synchronisées', '#e65100');
+  }
+}
+
+// ─── SYNC FORCÉ (bouton 🔄) ────────────────────────────
+async function syncShared() {
+  const btn = document.getElementById('sync-btn');
+  btn.textContent = '⏳';
+  btn.disabled = true;
+  try {
+    const r = await fetch('/data.json?v=' + Date.now());
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+
+    const map = {};
+    Object.entries(d.vol || {}).forEach(([k, v]) => { map[`vol_${k}`] = v; });
+    (d.hebergements || []).forEach(h => {
+      ['lieu','hotel','tel','resa'].forEach(f => { map[`ht${h.n}_${f}`] = h[f] || ''; });
+    });
+    (d.groupe || []).forEach((m, i) => {
+      map[`grp${i+1}_nom`]  = m.nom  || '';
+      map[`grp${i+1}_tel`]  = m.tel  || '';
+      map[`grp${i+1}_info`] = m.info || '';
+    });
+    Object.entries(d.assurance_voyage || {}).forEach(([k, v]) => { map[`av_${k}`] = v; });
+
+    // Écraser TOUTES les clés communes (même si déjà remplies localement)
+    Object.entries(map).forEach(([key, val]) => {
+      if (SHARED_KEYS.includes(key)) localStorage.setItem(key, val);
+    });
+
+    loadAll();
+    setupCallLinks();
+
+    // Bordure verte sur champs communs
+    document.querySelectorAll('[data-key]').forEach(el => {
+      if (SHARED_KEYS.includes(el.dataset.key) && el.value) {
+        el.style.borderColor = '#81c784';
+      }
+    });
+
+    showMsg('✓ Données communes synchronisées !');
+  } catch(e) {
+    showMsg('⚠ Impossible de synchroniser', '#e65100');
+  } finally {
+    btn.textContent = '🔄 Sync';
+    btn.disabled = false;
+  }
+}
+
+function showMsg(text, color = '#2e7d32') {
+  const msg = document.getElementById('save-msg');
+  msg.textContent = text;
+  msg.style.color = color;
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 3000);
 }
 
 // ─── PERSISTANCE (localStorage) ───────────────────────
@@ -701,9 +758,7 @@ function saveAll() {
     localStorage.setItem(el.dataset.key, el.value);
   });
   setupCallLinks();
-  const msg = document.getElementById('save-msg');
-  msg.classList.add('show');
-  setTimeout(() => msg.classList.remove('show'), 2200);
+  showMsg('✓ Sauvegardé !');
 }
 
 function loadAll() {
