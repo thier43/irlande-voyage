@@ -351,6 +351,9 @@
 <div id="save-bar">
   <button onclick="saveAll()">💾 Sauvegarder</button>
   <button onclick="syncShared()" id="sync-btn" style="background:var(--blue);flex:0 0 auto;padding:11px 14px;font-size:.85rem;">🔄 Sync</button>
+  <button onclick="exportData()" style="background:var(--green);flex:0 0 auto;padding:11px 14px;font-size:.85rem;">📤 Export</button>
+  <button onclick="document.getElementById('import-input').click()" style="background:var(--orange);flex:0 0 auto;padding:11px 14px;font-size:.85rem;">📥 Import</button>
+  <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
   <span id="save-msg"></span>
 </div>
 
@@ -821,6 +824,92 @@ function installPWA() {
 buildUI();
 showInstallHint();
 loadSharedData(); // charge data.json puis écrase les champs communs vides
+
+// ─── EXPORT données communes ──────────────────────────
+function exportData() {
+  const data = {
+    "_comment": "Données communes — importez ce fichier dans l'appli Irlande 2025",
+    "voyage": { "titre": "Voyage Irlande 2025", "dates": "12 mai → 23 mai", "description": "11 nuits / 7 étapes" },
+    "vol": {
+      "aller_num":   localStorage.getItem('vol_aller_num')  || '',
+      "aller_info":  localStorage.getItem('vol_aller_info') || '',
+      "retour_num":  localStorage.getItem('vol_retour_num')  || '',
+      "retour_info": localStorage.getItem('vol_retour_info') || '',
+      "ref":         localStorage.getItem('vol_ref')         || '',
+      "voiture":     localStorage.getItem('vol_voiture')     || ''
+    },
+    "hebergements": [1,2,3,4,5,6,7].map(n => ({
+      n,
+      dates: ["","12–13 mai","13–15 mai","15–16 mai","16–18 mai","18–20 mai","20–22 mai","22–23 mai"][n],
+      lieu:  localStorage.getItem(`ht${n}_lieu`)  || '',
+      hotel: localStorage.getItem(`ht${n}_hotel`) || '',
+      tel:   localStorage.getItem(`ht${n}_tel`)   || '',
+      resa:  localStorage.getItem(`ht${n}_resa`)  || ''
+    })),
+    "groupe": [1,2,3,4,5,6,7,8].map(i => ({
+      nom:  localStorage.getItem(`grp${i}_nom`)  || '',
+      tel:  localStorage.getItem(`grp${i}_tel`)  || '',
+      info: localStorage.getItem(`grp${i}_info`) || ''
+    })),
+    "assurance_voyage": {
+      compagnie:  localStorage.getItem('av_compagnie')  || '',
+      contrat:    localStorage.getItem('av_contrat')    || '',
+      tel:        localStorage.getItem('av_tel')        || '',
+      garanties:  localStorage.getItem('av_garanties')  || ''
+    }
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'irlande-donnees-communes.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showMsg('✓ Fichier exporté !');
+}
+
+// ─── IMPORT données communes ───────────────────────────
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+
+      // Vol
+      Object.entries(d.vol || {}).forEach(([k, v]) => localStorage.setItem(`vol_${k}`, v));
+      // Hébergements
+      (d.hebergements || []).forEach(h => {
+        ['lieu','hotel','tel','resa'].forEach(f => localStorage.setItem(`ht${h.n}_${f}`, h[f] || ''));
+      });
+      // Groupe
+      (d.groupe || []).forEach((m, i) => {
+        localStorage.setItem(`grp${i+1}_nom`,  m.nom  || '');
+        localStorage.setItem(`grp${i+1}_tel`,  m.tel  || '');
+        localStorage.setItem(`grp${i+1}_info`, m.info || '');
+      });
+      // Assurance voyage
+      Object.entries(d.assurance_voyage || {}).forEach(([k, v]) => localStorage.setItem(`av_${k}`, v));
+
+      loadAll();
+      setupCallLinks();
+      showMsg('✓ Données importées !');
+
+      // Bordure verte sur champs communs
+      document.querySelectorAll('[data-key]').forEach(el => {
+        if (SHARED_KEYS.includes(el.dataset.key) && el.value) {
+          el.style.borderColor = '#81c784';
+        }
+      });
+    } catch(err) {
+      showMsg('⚠ Fichier invalide', '#e65100');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // reset input
+}
 
 // Auto-save on change (debounced)
 let saveTimer;
