@@ -27,14 +27,15 @@
   ],
 
   "groupe": [
-    { "nom": "Thierry CLAUDE", "tel": "06 22 71 02 95 ", "info": "Organisateur principal" },
-    { "nom": "Annie RIVIER-CLAUDE", "tel": "06 13 62 20 43", "info": "" },
-    { "nom": "Michèle HOUZE", "tel": "", "info": "" },
-    { "nom": "Luc SCHMITT", "tel": "", "info": "" },
-    { "nom": "", "tel": "", "info": "" },
-    { "nom": "", "tel": "", "info": "" },
-    { "nom": "", "tel": "", "info": "" },
-  ]
+    { "nom": "Thierry CLAUDE",       "tel": "06 22 71 02 95", "info": "Organisateur principal" },
+    { "nom": "Annie RIVIER-CLAUDE",  "tel": "06 13 62 20 43", "info": "" },
+    { "nom": "Michèle HOUZE",        "tel": "",               "info": "" },
+    { "nom": "Luc SCHMITT",          "tel": "",               "info": "" },
+    { "nom": "",                     "tel": "",               "info": "" },
+    { "nom": "",                     "tel": "",               "info": "" },
+    { "nom": "",                     "tel": "",               "info": "" },
+    { "nom": "",                     "tel": "",               "info": "" }
+  ],
 
   "assurance_voyage": {
     "compagnie":  "",
