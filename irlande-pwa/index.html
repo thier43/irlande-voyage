@@ -629,12 +629,77 @@ function toggleCard(head) {
   head.querySelector('.chevron').textContent = head.classList.contains('open') ? '▲' : '▼';
 }
 
+// ─── CLÉS COMMUNES (données partagées depuis data.json) ───
+const SHARED_KEYS = [
+  'vol_aller_num','vol_aller_info','vol_retour_num','vol_retour_info','vol_ref','vol_voiture',
+  'ht1_lieu','ht1_hotel','ht1_tel','ht1_resa',
+  'ht2_lieu','ht2_hotel','ht2_tel','ht2_resa',
+  'ht3_lieu','ht3_hotel','ht3_tel','ht3_resa',
+  'ht4_lieu','ht4_hotel','ht4_tel','ht4_resa',
+  'ht5_lieu','ht5_hotel','ht5_tel','ht5_resa',
+  'ht6_lieu','ht6_hotel','ht6_tel','ht6_resa',
+  'ht7_lieu','ht7_hotel','ht7_tel','ht7_resa',
+  'grp1_nom','grp1_tel','grp1_info',
+  'grp2_nom','grp2_tel','grp2_info',
+  'grp3_nom','grp3_tel','grp3_info',
+  'grp4_nom','grp4_tel','grp4_info',
+  'grp5_nom','grp5_tel','grp5_info',
+  'grp6_nom','grp6_tel','grp6_info',
+  'grp7_nom','grp7_tel','grp7_info',
+  'grp8_nom','grp8_tel','grp8_info',
+  'av_compagnie','av_contrat','av_tel','av_garanties',
+];
+
+// ─── CHARGEMENT data.json (données communes) ──────────
+async function loadSharedData() {
+  try {
+    const r = await fetch('/data.json?v=' + Date.now());
+    if (!r.ok) return;
+    const d = await r.json();
+
+    const map = {};
+    // Vol
+    Object.entries(d.vol || {}).forEach(([k, v]) => { map[`vol_${k}`] = v; });
+    // Hébergements
+    (d.hebergements || []).forEach(h => {
+      ['lieu','hotel','tel','resa'].forEach(f => { map[`ht${h.n}_${f}`] = h[f] || ''; });
+    });
+    // Groupe
+    (d.groupe || []).forEach((m, i) => {
+      map[`grp${i+1}_nom`]  = m.nom  || '';
+      map[`grp${i+1}_tel`]  = m.tel  || '';
+      map[`grp${i+1}_info`] = m.info || '';
+    });
+    // Assurance voyage
+    Object.entries(d.assurance_voyage || {}).forEach(([k, v]) => { map[`av_${k}`] = v; });
+
+    // Pré-remplir uniquement les champs vides en localStorage
+    Object.entries(map).forEach(([key, val]) => {
+      if (val && !localStorage.getItem(key)) {
+        localStorage.setItem(key, val);
+      }
+    });
+
+    // Rafraîchir l'affichage
+    loadAll();
+    setupCallLinks();
+
+    // Marquer visuellement les champs communs
+    document.querySelectorAll('[data-key]').forEach(el => {
+      if (SHARED_KEYS.includes(el.dataset.key) && el.value) {
+        el.style.borderColor = '#81c784';
+        el.title = 'Donnée commune — modifiable localement';
+      }
+    });
+
+  } catch(e) { /* silencieux si offline */ }
+}
+
 // ─── PERSISTANCE (localStorage) ───────────────────────
 function saveAll() {
   document.querySelectorAll('[data-key]').forEach(el => {
     localStorage.setItem(el.dataset.key, el.value);
   });
-  // Mettre à jour le lien d'appel assurance voyage
   setupCallLinks();
   const msg = document.getElementById('save-msg');
   msg.classList.add('show');
@@ -700,6 +765,7 @@ function installPWA() {
 // ─── INIT ──────────────────────────────────────────────
 buildUI();
 showInstallHint();
+loadSharedData(); // charge data.json puis écrase les champs communs vides
 
 // Auto-save on change (debounced)
 let saveTimer;
