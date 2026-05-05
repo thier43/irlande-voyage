@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Irlande 🍀">
+<meta name="theme-color" content="#1a5c2a">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>🍀 Voyage Irlande 2025</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+
+  :root {
+    --green:     #1a5c2a;
+    --green2:    #2e7d32;
+    --green3:    #43a047;
+    --greenLight:#e8f5e9;
+    --greenPale: #f1f8f2;
+    --orange:    #e65100;
+    --orangeL:   #fff3e0;
+    --blue:      #0d47a1;
+    --blueL:     #e3f2fd;
+    --red:       #c62828;
+    --redL:      #ffebee;
+    --grey:      #546e7a;
+    --greyL:     #eceff1;
+    --white:     #ffffff;
+    --shadow:    0 2px 12px rgba(26,92,42,.13);
+    --radius:    14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: #f0f7f1;
+    color: #263238;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green3) 100%);
+    color: white;
+    padding: 20px 16px 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(26,92,42,.35);
+  }
+  header h1 { font-family: 'Nunito', sans-serif; font-size: 1.25rem; font-weight: 900; letter-spacing: -.3px; }
+  header p  { font-size: .78rem; opacity: .85; margin-top: 2px; }
+
+  /* ── TABS ── */
+  nav {
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid var(--greenLight);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 74px;
+    z-index: 99;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    flex: 0 0 auto;
+    background: none;
+    border: none;
+    padding: 11px 14px 9px;
+    font-family: 'Nunito', sans-serif;
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--grey);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  nav button.active { color: var(--green); border-bottom-color: var(--green); }
+  nav button:hover  { color: var(--green2); }
+
+  /* ── SECTIONS ── */
+  .tab-content { display: none; padding: 14px 14px 0; }
+  .tab-content.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: .88rem;
+    font-weight: 800;
+    color: var(--white);
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-head .chevron { margin-left: auto; font-size: .8rem; transition: transform .25s; }
+  .card-head.open .chevron { transform: rotate(180deg); }
+  .card-body { display: none; padding: 12px 14px 14px; }
+  .card-body.open { display: block; }
+
+  /* Couleurs des cards */
+  .ch-green  { background: linear-gradient(90deg, var(--green), var(--green2)); }
+  .ch-orange { background: linear-gradient(90deg, var(--orange), #f57c00); }
+  .ch-blue   { background: linear-gradient(90deg, var(--blue), #1565c0); }
+  .ch-red    { background: linear-gradient(90deg, var(--red), #e53935); }
+
+  /* ── ROWS / FIELDS ── */
+  .row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .row:last-child { border-bottom: none; }
+  .row label {
+    flex: 0 0 42%;
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--grey);
+    padding-top: 4px;
+    line-height: 1.3;
+  }
+  .row .val {
+    flex: 1;
+    font-size: .82rem;
+    color: #263238;
+    line-height: 1.4;
+  }
+  .row .val a { color: var(--blue); text-decoration: none; font-weight: 700; }
+  .row .val a:hover { text-decoration: underline; }
+
+  /* Numéros d'urgence en gros */
+  .emergency-num {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--red);
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: .72rem;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+  .badge-red    { background: var(--redL);    color: var(--red); }
+  .badge-green  { background: var(--greenLight); color: var(--green); }
+  .badge-orange { background: var(--orangeL); color: var(--orange); }
+  .badge-blue   { background: var(--blueL);   color: var(--blue); }
+
+  /* ── CHAMPS ÉDITABLES ── */
+  .editable {
+    width: 100%;
+    border: 1.5px solid var(--greyL);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: .82rem;
+    color: #263238;
+    background: #fafffe;
+    transition: border-color .2s;
+    resize: none;
+  }
+  .editable:focus { outline: none; border-color: var(--green3); background: var(--white); }
+  input.editable  { height: 34px; }
+  textarea.editable { min-height: 52px; }
+
+  /* ── ÉTAPES / TIMELINE ── */
+  .etape {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .etape:last-child { border-bottom: none; }
+  .etape-num {
+    flex: 0 0 28px;
+    height: 28px;
+    background: var(--green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: .82rem;
+    margin-top: 3px;
+  }
+  .etape-info { flex: 1; }
+  .etape-info input, .etape-info textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .etape-date-label { font-size: .7rem; color: var(--grey); font-weight: 700; margin-bottom: 2px; }
+
+  /* ── BOUTON APPEL ── */
+  .call-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #d4edda;
+    color: #1a5c2a;
+    border: 2px solid #1a5c2a;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: .84rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
+    letter-spacing: .2px;
+  }
+  .call-btn:hover { background: #1a5c2a; color: #ffffff; }
+  .call-btn.red   { background: #fde8e8; color: #c62828; border-color: #c62828; }
+  .call-btn.red:hover { background: #c62828; color: #ffffff; }
+
+  /* ── SAVE BANNER ── */
+  #save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 2px solid var(--greenLight);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 200;
+    box-shadow: 0 -2px 12px rgba(0,0,0,.09);
+  }
+  #save-bar button {
+    flex: 1;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 11px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  #save-bar button:hover { background: var(--green2); }
+  #save-msg { font-size: .78rem; color: var(--green2); font-weight: 700; opacity: 0; transition: opacity .5s; }
+  #save-msg.show { opacity: 1; }
+
+  /* ── INSTALL HINT ── */
+  #install-hint {
+    background: var(--blueL);
+    border-left: 4px solid var(--blue);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 10px 14px;
+    font-size: .78rem;
+    color: var(--blue);
+    display: none;
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--greenPale);
+    border-left: 3px solid var(--green3);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 10px;
+    font-size: .75rem;
+    color: var(--grey);
+    line-height: 1.5;
+  }
+  .warn-box {
+    background: var(--redL);
+    border-left: 3px solid var(--red);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 8px;
+    font-size: .75rem;
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .section-subtitle {
+    font-family: 'Nunito', sans-serif;
+    font-size: .82rem;
+    font-weight: 800;
+    color: var(--orange);
+    margin: 12px 0 6px;
+    padding-bottom: 3px;
+    border-bottom: 1px dashed #f0c070;
+  }
+
+  .contacts-grid {
+    display: grid;
+    gap: 8px;
+  }
+  .contact-entry {
+    background: var(--greenPale);
+    border-radius: 10px;
+    padding: 9px 11px;
+  }
+  .contact-entry input {
+    display: block;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .contact-entry .contact-name {
+    font-size: .88rem;
+    font-weight: 800;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍀 Voyage Irlande — Mai 2025</h1>
+  <p>12 mai → 23 mai &nbsp;|&nbsp; 11 nuits / 7 étapes</p>
+</header>
+
+<nav id="nav"></nav>
+
+<div id="install-hint">
+  📲 <strong>Astuce :</strong> Ajoutez cette page à l'écran d'accueil pour l'utiliser comme une appli, même sans connexion !
+</div>
+
+<div id="tabs-container"></div>
+
+<div id="save-bar">
+  <button onclick="saveAll()">💾 Sauvegarder mes données</button>
+  <span id="save-msg">✓ Sauvegardé !</span>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// STRUCTURE DES ONGLETS
+// ════════════════════════════════════════════════════════
+const TABS = [
+  {
+    id: "urgences", label: "🚨 Urgences",
+    render: () => `
+      <div class="card">
+        <div class="card-head ch-red open" onclick="toggleCard(this)">
+          🚨 Numéros d'urgence Irlande <span class="chevron">▲</span>
+        </div>
+        <div class="card-body open">
+          <div class="row">
+            <label>URGENCES (Police / SAMU / Pompiers)</label>
+            <div class="val">
+              <div class="emergency-num">999 &nbsp;/&nbsp; 112</div>
+              <span class="badge badge-red">Gratuit 24h/24</span><br>
+              <a class="call-btn red" href="tel:112">📞 Appeler le 112</a>
+            </div>
+          </div>
+          <div class="row">
+            <label>Police Garda (non-urgence)</label>
+            <div class="val"><strong>1800 666 111</strong> <span class="badge badge-blue">Gratuit</span><br>
+            <a class="call-btn" href="tel:1800666111">📞 Appeler</a></div>
+          </div>
+          <div class="row">
+            <label>HSE — Santé publique</label>
+            <div class="val"><strong>1800 700 700</strong><br>Conseils médicaux, gratuit<br>
+            <a class="call-btn" href="tel:1800700700">📞 Appeler</a></div>
+          </div>
+          <div class="row">
+            <label>Pharmacie de garde</label>
+            <div class="val"><strong>1800 520 520</strong><br>
+            <a class="call-btn" href="tel:1800520520">📞 Appeler</a></div>
+          </div>
+          <div class="row">
+            <label>Panne auto (AA Ireland)</label>
+            <div class="val"><strong>0818 227 228</strong><br>
+            <a class="call-btn" href="tel:0818227228">📞 Appeler</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head ch-blue" onclick="toggleCard(this)">
+          🇫🇷 Ambassade de France — Dublin <span class="chevron">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="row"><label>Adresse</label><div class="val">66 Fitzwilliam Lane, Dublin 2</div></div>
+          <div class="row"><label>Tél bureau</label><div class="val"><strong>+353 1 277 5000</strong><br><a class="call-btn" href="tel:+35312775000">📞 Appeler</a></div></div>
+          <div class="row"><label>Astreinte 24h/24</label><div class="val"><strong>+353 1 277 5000</strong> <span class="badge badge-red">urgences</span><br>Demander l'astreinte consulaire<br><a class="call-btn red" href="tel:+35312775000">📞 Urgence</a></div></div>
+          <div class="row"><label>Centre de crise MFA (depuis FR)</label><div class="val"><strong>+33 1 43 17 67 67</strong><br><a class="call-btn" href="tel:+33143176767">📞 Appeler</a></div></div>
+          <div class="row"><label>Site web</label><div class="val"><a href="https://ie.ambafrance.org" target="_blank">ie.ambafrance.org</a></div></div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: "identite", label: "👤 Moi",
+    render: () => `
+      <div class="card">
+        <div class="card-head ch-green open" onclick="toggleCard(this)">
+          👤 Mon identité & santé <span class="chevron">▲</span>
+        </div>
+        <div class="card-body open">
+          <div class="row"><label>Nom / Prénom</label><div class="val"><input class="editable" data-key="id_nom" placeholder="Votre nom et prénom"></div></div>
+          <div class="row"><label>Groupe sanguin</label><div class="val"><input class="editable" data-key="id_sang" placeholder="Ex : A+"></div></div>
+          <div class="row"><label>Allergies / Traitements</label><div class="val"><textarea class="editable" data-key="id_allergies" placeholder="Médicaments, allergies connues…"></textarea></div></div>
+          <div class="row"><label>N° Passeport / CI</label><div class="val"><input class="editable" data-key="id_passeport" placeholder="Numéro du document"></div></div>
+          <div class="row"><label>Contact urgence France</label><div class="val">
+            <input class="editable" data-key="id_urgnom" placeholder="Nom du contact" style="margin-bottom:4px">
+            <input class="editable" data-key="id_urgtél" placeholder="Téléphone (+33…)">
+          </div></div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: "assurances", label: "🛡️ Assurances",
+    render: () => `
+      <div class="card">
+        <div class="card-head ch-orange open" onclick="toggleCard(this)">
+          ✈️ A — Assurance voyage <span class="chevron">▲</span>
+        </div>
+        <div class="card-body open">
+          <div class="row"><label>Compagnie</label><div class="val"><input class="editable" data-key="av_compagnie" placeholder="Ex : AXA Travel, Chapka, Europ Assistance…"></div></div>
+          <div class="row"><label>N° contrat / dossier</label><div class="val"><input class="editable" data-key="av_contrat" placeholder="Numéro de contrat"></div></div>
+          <div class="row"><label>Tél assistance (24h/24)</label><div class="val">
+            <input class="editable" data-key="av_tel" placeholder="+33 …">
+            <a id="av-call-link" class="call-btn" href="#" style="margin-top:5px;display:inline-flex">📞 Appeler</a>
+          </div></div>
+          <div class="row"><label>Garanties</label><div class="val"><textarea class="editable" data-key="av_garanties" placeholder="Annulation, rapatriement, bagages…"></textarea></div></div>
+          <div class="info-box">💡 Conservez la carte d'assurance et la police dans vos bagages à main.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head ch-orange" onclick="toggleCard(this)">
+          🏠 B — Assurance personnelle (MAAF, MACIF…) <span class="chevron">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="row"><label>Compagnie</label><div class="val"><input class="editable" data-key="ap_compagnie" placeholder="Ex : MAAF, MACIF, MAIF, AXA…"></div></div>
+          <div class="row"><label>N° contrat</label><div class="val"><input class="editable" data-key="ap_contrat" placeholder="Numéro de contrat"></div></div>
+          <div class="row"><label>Tél sinistres / assistance</label><div class="val">
+            <input class="editable" data-key="ap_tel" placeholder="+33 …">
+            <a id="ap-call-link" class="call-btn" href="#" style="margin-top:5px;display:inline-flex">📞 Appeler</a>
+          </div></div>
+          <div class="row"><label>Couverture hors France</label><div class="val"><textarea class="editable" data-key="ap_couverture" placeholder="RC vie privée, bagages, vol…"></textarea></div></div>
+          <div class="info-box">💡 La plupart des assurances multirisques habitation incluent une RC vie privée valable à l'étranger. Vérifiez avant le départ.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head ch-blue" onclick="toggleCard(this)">
+          💳 C — Carte bancaire & CEAM <span class="chevron">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="row"><label>Banque / Type de carte</label><div class="val"><input class="editable" data-key="cb_banque" placeholder="Ex : Visa Premier, Mastercard Gold…"></div></div>
+          <div class="row"><label>Tél assistance CB</label><div class="val"><input class="editable" data-key="cb_tel" placeholder="Au dos de la carte CB"></div></div>
+          <div class="row"><label>Garanties incluses</label><div class="val"><textarea class="editable" data-key="cb_garanties" placeholder="Bagages, retard vol, RC, annulation…"></textarea></div></div>
+          <div class="warn-box">⚠ CEAM (Carte Européenne d'Assurance Maladie) — au dos de votre Carte Vitale. INDISPENSABLE pour les soins en Irlande !</div>
+          <div class="info-box">💡 Si bagages retardés par la compagnie aérienne : exiger le PIR (Property Irregularity Report) à l'aéroport.</div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: "voyage", label: "✈️ Vol & Étapes",
+    render: () => {
+      const etapes = [
+        { n: 1, dates: "12–13 mai" }, { n: 2, dates: "13–15 mai" },
+        { n: 3, dates: "15–16 mai" }, { n: 4, dates: "16–18 mai" },
+        { n: 5, dates: "18–20 mai" }, { n: 6, dates: "20–22 mai" },
+        { n: 7, dates: "22–23 mai" }
+      ];
+      return `
+      <div class="card">
+        <div class="card-head ch-blue open" onclick="toggleCard(this)">
+          ✈️ Vol <span class="chevron">▲</span>
+        </div>
+        <div class="card-body open">
+          <div class="row"><label>N° vol aller</label><div class="val"><input class="editable" data-key="vol_aller_num" placeholder="Ex : FR1234"></div></div>
+          <div class="row"><label>Départ / Arrivée aller</label><div class="val"><input class="editable" data-key="vol_aller_info" placeholder="12 mai — CDG 08h30 → DUB 10h00"></div></div>
+          <div class="row"><label>N° vol retour</label><div class="val"><input class="editable" data-key="vol_retour_num" placeholder="Ex : FR5678"></div></div>
+          <div class="row"><label>Départ / Arrivée retour</label><div class="val"><input class="editable" data-key="vol_retour_info" placeholder="23 mai — DUB 14h00 → CDG 17h00"></div></div>
+          <div class="row"><label>Compagnie / Réf. dossier</label><div class="val"><input class="editable" data-key="vol_ref" placeholder="Compagnie + code réservation"></div></div>
+          <div class="row"><label>Location véhicule</label><div class="val"><input class="editable" data-key="vol_voiture" placeholder="Loueur + réf. — Rappel : conduite à GAUCHE !"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head ch-green open" onclick="toggleCard(this)">
+          🏨 Hébergements — 11 nuits / 7 étapes <span class="chevron">▲</span>
+        </div>
+        <div class="card-body open">
+          ${etapes.map(e => `
+          <div class="etape">
+            <div class="etape-num">${e.n}</div>
+            <div class="etape-info">
+              <div class="etape-date-label">${e.dates}</div>
+              <input class="editable" data-key="ht${e.n}_lieu" placeholder="Ville / Lieu">
+              <input class="editable" data-key="ht${e.n}_hotel" placeholder="Nom de l'hébergement">
+              <input class="editable" data-key="ht${e.n}_tel" placeholder="📞 Tél établissement">
+              <input class="editable" data-key="ht${e.n}_resa" placeholder="Réf. réservation">
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }
+  },
+  {
+    id: "groupe", label: "👥 Groupe",
+    render: () => {
+      const membres = Array.from({length: 8}, (_, i) => i + 1);
+      return `
+      <div class="card">
+        <div class="card-head ch-green open" onclick="toggleCard(this)">
+          👥 Contacts du groupe <span class="chevron">▲</span>
+        </div>
+        <div class="card-body open">
+          <div class="contacts-grid">
+          ${membres.map(i => `
+            <div class="contact-entry">
+              <div class="contact-name">Participant ${i}${i === 1 ? ' (organisateur)' : ''}</div>
+              <input class="editable" data-key="grp${i}_nom" placeholder="Prénom Nom" style="margin-bottom:4px">
+              <input class="editable" data-key="grp${i}_tel" placeholder="📞 Mobile (+33…)" style="margin-bottom:4px">
+              <input class="editable" data-key="grp${i}_info" placeholder="Info / rôle">
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    }
+  },
+  {
+    id: "infos", label: "ℹ️ Irlande",
+    render: () => `
+      <div class="card">
+        <div class="card-head ch-red open" onclick="toggleCard(this)">
+          ⚠️ Points de vigilance <span class="chevron">▲</span>
+        </div>
+        <div class="card-body open">
+          <div class="warn-box">🚗 Conduite à GAUCHE — priorité à droite inversée — ronds-points très fréquents</div>
+          <div class="warn-box" style="margin-top:8px">🔌 Prises Type G (3 broches plates) — adaptateur obligatoire</div>
+          <div class="warn-box" style="margin-top:8px">💊 CEAM (dos Carte Vitale) — à emporter absolument !</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head ch-green" onclick="toggleCard(this)">
+          🌍 Infos pratiques <span class="chevron">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="row"><label>Monnaie</label><div class="val">Euro (€) — DAB/ATM partout</div></div>
+          <div class="row"><label>Décalage horaire</label><div class="val">UTC+1 en été → 1h de moins qu'en France</div></div>
+          <div class="row"><label>Indicatif tél.</label><div class="val">+353 (supprimer le 0 initial)</div></div>
+          <div class="row"><label>Internet</label><div class="val">Roaming UE gratuit avec forfait FR</div></div>
+          <div class="row"><label>Alcool au volant</label><div class="val">50 mg/100 ml (20 mg jeune conducteur)</div></div>
+          <div class="row"><label>Météo</label><div class="val">Imprévisible — imperméable indispensable !</div></div>
+          <div class="row"><label>Langue</label><div class="val">Anglais (gaélique dans le Gaeltacht)</div></div>
+          <div class="row"><label>AA Ireland (panne)</label><div class="val"><strong>0818 227 228</strong><br><a class="call-btn" href="tel:0818227228">📞 Appeler</a></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head ch-blue" onclick="toggleCard(this)">
+          📲 Applis utiles en Irlande <span class="chevron">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="row"><label>Google Maps</label><div class="val">Navigation — télécharger la carte Irlande hors-ligne</div></div>
+          <div class="row"><label>HSE.ie</label><div class="val">Localiser un médecin ou une pharmacie</div></div>
+          <div class="row"><label>Met Éireann</label><div class="val">Météo officielle irlandaise</div></div>
+          <div class="row"><label>Revolut / Wise</label><div class="val">Paiement sans frais en €</div></div>
+          <div class="row"><label>TransferMate</label><div class="val">Transports en commun Dublin</div></div>
+        </div>
+      </div>
+    `
+  },
+];
+
+// ════════════════════════════════════════════════════════
+// RENDU & LOGIQUE
+// ════════════════════════════════════════════════════════
+function buildUI() {
+  const nav = document.getElementById('nav');
+  const container = document.getElementById('tabs-container');
+
+  TABS.forEach((tab, idx) => {
+    // nav button
+    const btn = document.createElement('button');
+    btn.textContent = tab.label;
+    btn.dataset.tab = tab.id;
+    if (idx === 0) btn.classList.add('active');
+    btn.onclick = () => switchTab(tab.id);
+    nav.appendChild(btn);
+
+    // content div
+    const div = document.createElement('div');
+    div.id = `tab-${tab.id}`;
+    div.className = 'tab-content' + (idx === 0 ? ' active' : '');
+    div.innerHTML = tab.render();
+    container.appendChild(div);
+  });
+
+  loadAll();
+  setupCallLinks();
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${id}`).classList.add('active');
+  document.querySelector(`nav button[data-tab="${id}"]`).classList.add('active');
+}
+
+function toggleCard(head) {
+  head.classList.toggle('open');
+  const body = head.nextElementSibling;
+  body.classList.toggle('open');
+  head.querySelector('.chevron').textContent = head.classList.contains('open') ? '▲' : '▼';
+}
+
+// ─── PERSISTANCE (localStorage) ───────────────────────
+function saveAll() {
+  document.querySelectorAll('[data-key]').forEach(el => {
+    localStorage.setItem(el.dataset.key, el.value);
+  });
+  // Mettre à jour le lien d'appel assurance voyage
+  setupCallLinks();
+  const msg = document.getElementById('save-msg');
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 2200);
+}
+
+function loadAll() {
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const val = localStorage.getItem(el.dataset.key);
+    if (val !== null) el.value = val;
+  });
+}
+
+function setupCallLinks() {
+  // Assurance voyage — lien d'appel dynamique
+  setTimeout(() => {
+    const avTel = document.querySelector('[data-key="av_tel"]');
+    const avLink = document.getElementById('av-call-link');
+    if (avTel && avLink) {
+      const num = avTel.value.replace(/\s/g, '');
+      avLink.href = num ? `tel:${num}` : '#';
+    }
+    const apTel = document.querySelector('[data-key="ap_tel"]');
+    const apLink = document.getElementById('ap-call-link');
+    if (apTel && apLink) {
+      const num = apTel.value.replace(/\s/g, '');
+      apLink.href = num ? `tel:${num}` : '#';
+    }
+  }, 100);
+}
+
+// ─── INSTALL HINT ──────────────────────────────────────
+function showInstallHint() {
+  const hint = document.getElementById('install-hint');
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if (!standalone) hint.style.display = 'block';
+}
+
+// ─── SERVICE WORKER ────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
+// ─── INSTALL PROMPT (Android Chrome) ───────────────────
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const hint = document.getElementById('install-hint');
+  hint.style.display = 'block';
+  hint.innerHTML = `📲 <strong>Installer l'appli</strong> sur votre téléphone pour y accéder hors connexion. <button onclick="installPWA()" style="margin-left:8px;background:var(--blue);color:white;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;">Installer</button>`;
+});
+
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+  }
+}
+
+// ─── INIT ──────────────────────────────────────────────
+buildUI();
+showInstallHint();
+
+// Auto-save on change (debounced)
+let saveTimer;
+document.addEventListener('input', () => {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveAll, 1500);
+});
+</script>
+</body>
+</html>
