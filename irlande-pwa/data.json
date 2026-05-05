@@ -8,10 +8,10 @@
   },
 
   "vol": {
-    "aller_num":    "",
-    "aller_info":   "",
-    "retour_num":   "",
-    "retour_info":  "",
+    "aller_num":    "EI551",
+    "aller_info":   "10h10",
+    "retour_num":   "EI552",
+    "retour_info":  "13h05",
     "ref":          "",
     "voiture":      ""
   },
@@ -27,14 +27,13 @@
   ],
 
   "groupe": [
-    { "nom": "", "tel": "", "info": "Organisateur principal" },
+    { "nom": "Thierry CLAUDE", "tel": "06 22 71 02 95 ", "info": "Organisateur principal" },
+    { "nom": "Annie RIVIER-CLAUDE", "tel": "06 13 62 20 43", "info": "" },
+    { "nom": "Michèle HOUZE", "tel": "", "info": "" },
+    { "nom": "Luc SCHMITT", "tel": "", "info": "" },
     { "nom": "", "tel": "", "info": "" },
     { "nom": "", "tel": "", "info": "" },
     { "nom": "", "tel": "", "info": "" },
-    { "nom": "", "tel": "", "info": "" },
-    { "nom": "", "tel": "", "info": "" },
-    { "nom": "", "tel": "", "info": "" },
-    { "nom": "", "tel": "", "info": "" }
   ],
 
   "assurance_voyage": {
