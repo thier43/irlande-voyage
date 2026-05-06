@@ -39,7 +39,7 @@
     background: #f0f7f1;
     color: #263238;
     min-height: 100vh;
-    padding-bottom: 80px;
+    padding-bottom: 110px;
   }
 
   /* ── HEADER ── */
@@ -243,29 +243,40 @@
     bottom: 0; left: 0; right: 0;
     background: var(--white);
     border-top: 2px solid var(--greenLight);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 6px;
     z-index: 200;
     box-shadow: 0 -2px 12px rgba(0,0,0,.09);
   }
   #save-bar button {
-    flex: 1;
     background: var(--green);
     color: white;
     border: none;
     border-radius: 10px;
-    padding: 11px;
+    padding: 10px 6px;
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
-    font-size: .9rem;
+    font-size: .82rem;
     cursor: pointer;
     transition: background .2s;
+    white-space: nowrap;
   }
   #save-bar button:hover { background: var(--green2); }
-  #save-msg { font-size: .78rem; color: var(--green2); font-weight: 700; opacity: 0; transition: opacity .5s; }
-  #save-msg.show { opacity: 1; }
+  #save-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: .75rem;
+    color: var(--green2);
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity .5s;
+    min-height: 0;
+    padding: 0;
+  }
+  #save-msg.show { opacity: 1; min-height: 16px; }
 
   /* ── INSTALL HINT ── */
   #install-hint {
@@ -350,9 +361,9 @@
 
 <div id="save-bar">
   <button onclick="saveAll()">💾 Sauvegarder</button>
-  <button onclick="syncShared()" id="sync-btn" style="background:var(--blue);flex:0 0 auto;padding:11px 14px;font-size:.85rem;">🔄 Sync</button>
-  <button onclick="exportData()" style="background:var(--green);flex:0 0 auto;padding:11px 14px;font-size:.85rem;">📤 Export</button>
-  <button onclick="document.getElementById('import-input').click()" style="background:var(--orange);flex:0 0 auto;padding:11px 14px;font-size:.85rem;">📥 Import</button>
+  <button onclick="syncShared()" id="sync-btn" style="background:var(--blue);">🔄 Sync GitHub</button>
+  <button onclick="exportData()" style="background:var(--green2);">📤 Exporter JSON</button>
+  <button onclick="document.getElementById('import-input').click()" style="background:var(--orange);">📥 Importer JSON</button>
   <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
   <span id="save-msg"></span>
 </div>
